@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
-const PORT = 3000;
 
 // Password-to-postcard mapping
 const postcards = {
@@ -72,7 +71,8 @@ app.post("/check-password", (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Establishing the port
+const PORT = process.env.PORT || 5000;
+
+// Executing the server on given port number
+app.listen(PORT, console.log(`Server started on port ${PORT}`));
