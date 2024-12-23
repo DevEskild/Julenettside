@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>God Jul</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #001f3f;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        color: red;
+        font-size: 4rem;
+        text-align: center;
+        margin: 0 0 20px;
+      }
+
+      .snowflake {
+        position: absolute;
+        top: -10px;
+        color: white;
+        font-size: 1rem;
+        opacity: 0.8;
+        animation: fall linear infinite;
+      }
+
+      .password-box {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .password-box input {
+        padding: 10px;
+        font-size: 1rem;
+        margin-right: 10px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .password-box button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        color: white;
+        background-color: #0074d9;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .password-box button:hover {
+        background-color: #0056a3;
+      }
+
+      .postcard {
+        display: none;
+        margin-top: 20px;
+        padding: 20px;
+        background: white;
+        border: 5px solid red;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .postcard img {
+        max-width: 100%;
+        border-radius: 5px;
+      }
+
+      .postcard h2 {
+        margin: 10px 0 5px;
+        color: red;
+        font-size: 1.5rem;
+      }
+
+      .postcard p {
+        margin: 10px 0 0;
+        color: #333;
+        font-size: 1rem;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          transform: translateY(100vh) translateX(calc(-50vw + 50px));
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+
+        .postcard {
+          width: 90%;
+          padding: 15px;
+        }
+
+        .postcard h2 {
+          font-size: 1.2rem;
+        }
+
+        .postcard p {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>God Jul</h1>
+    <div class="password-box">
+      <input type="password" id="password" placeholder="Passord" />
+      <button onclick="checkPassword()">Submit</button>
+    </div>
+    <div id="postcard" class="postcard">
+      <img id="postcard-image" src="" alt="Postcard Image" />
+      <h2 id="postcard-title"></h2>
+      <p id="postcard-note"></p>
+    </div>
+    <script>
+      const snowflakes = 100;
+      for (let i = 0; i < snowflakes; i++) {
+        const snowflake = document.createElement("div");
+        snowflake.className = "snowflake";
+        snowflake.style.left = Math.random() * 100 + "vw";
+        snowflake.style.animationDuration = Math.random() * 3 + 2 + "s";
+        snowflake.style.fontSize = Math.random() * 10 + 10 + "px";
+        snowflake.textContent = "❄";
+        document.body.appendChild(snowflake);
+      }
+
+      function checkPassword() {
+        const password = document.getElementById("password").value;
+        const postcard = document.getElementById("postcard");
+        const postcardImage = document.getElementById("postcard-image");
+        const postcardTitle = document.getElementById("postcard-title");
+        const postcardNote = document.getElementById("postcard-note");
+
+        fetch("/check-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.valid) {
+              postcardImage.src = data.image;
+              postcardTitle.textContent = data.title;
+              postcardNote.textContent = data.note;
+              postcard.style.display = "block";
+            } else {
+              postcard.style.display = "none";
+              alert("Invalid Password!");
+            }
+          })
+          .catch(() => {
+            postcard.style.display = "none";
+            alert("Error checking password.");
+          });
+      }
+    </script>
+  </body>
+</html>
