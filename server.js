@@ -37,11 +37,11 @@ const postcards = {
 app.use(bodyParser.json());
 
 // Serve static files, including images
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "docs")));
 
 // Serve the frontend index.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "docs", "index.html"));
 });
 
 // Handle password validation and return postcard details
